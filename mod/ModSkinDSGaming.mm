@@ -65,10 +65,10 @@ NSString *documentDir3;
 
 
 - (void)presentDocumentPicker {
-
-    UIDocumentPickerViewController *documentPicker = [[UIDocumentPickerViewController alloc] 
-        initWithDocumentTypes:@[@"public.zip"] 
-        inMode:UIDocumentPickerModeImport];
+    UIDocumentPickerViewController *documentPicker =
+        [[UIDocumentPickerViewController alloc] 
+            initWithDocumentTypes:@[@"public.zip-archive", @"com.pkware.zip-archive", @"public.data"] 
+            inMode:UIDocumentPickerModeImport];
     
     documentPicker.delegate = self;
     documentPicker.modalPresentationStyle = UIModalPresentationFormSheet; 
