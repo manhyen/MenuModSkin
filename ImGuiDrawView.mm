@@ -248,11 +248,10 @@ exit(3);
         ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
            ImGui::SetWindowFontScale(1.65f);
         float originalPosY = ImGui::GetCursorPosY();
-        ImGui::SetWindowFontScale(1.65f);
         ImGui::SetCursorPosY(originalPosY - 15.0f);
         ImGui::SetCursorPosY(originalPosY + 8.0f);
         const char* tieudemenuCString = [__tieudemenu UTF8String];
-        ImGui::TextColored(ImColor(224, 17, 95), "%s", tieudemenuCString);
+        ImGui::TextColored(ImVec4(1.00f, 0.85f, 0.90f, 1.0f), "%s", tieudemenuCString);
         ImGui::SameLine();
 
         // Button color and style
@@ -280,29 +279,31 @@ exit(3);
         
         ImGui::SetCursorPosY(originalPosY - 2.0f);
         ImGui::SetCursorPosY(originalPosY + 31.0f);
-        // Sử dụng __banquyen thay vì banquyen
-        const char* banquyenCString = [__banquyen UTF8String];
-        ImVec2 pos = ImGui::GetCursorScreenPos();
+ const char* banquyenCString = [__banquyen UTF8String];
+ImVec2 pos = ImGui::GetCursorScreenPos();
 ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
 const char* text = banquyenCString;
 
 // Lấy thời gian để tạo hiệu ứng nhấp nháy
 float t = (float)ImGui::GetTime();
-float glow = (sinf(t * 3.0f) * 0.5f + 0.5f) * 150;  // dao động từ 0 → 150
+float glow = (sinf(t * 3.0f) * 0.5f + 0.5f) * 60; // dao động từ 0 → 60
+
+// 🎨 Màu pastel hồng nhạt
+ImU32 pastelPink = IM_COL32(255, 217, 230, 255);
 
 // Vẽ lớp phát sáng động (glow layer)
-for (int i = -3; i <= 3; i++) {
-    for (int j = -3; j <= 3; j++) {
+for (int i = -2; i <= 2; i++) {
+    for (int j = -2; j <= 2; j++) {
         if (i == 0 && j == 0) continue;
         draw_list->AddText(ImVec2(pos.x + i, pos.y + j),
-                           IM_COL32(255, 20, 147, (int)glow),  // Hồng neon (DeepPink)
+                           IM_COL32(255, 217, 230, (int)glow),  // pastel glow
                            text);
     }
 }
 
-// Vẽ chữ chính (sáng rõ ở giữa)
-draw_list->AddText(pos, IM_COL32(255, 20, 147, 255), text);
+// Vẽ chữ chính (sáng rõ ở giữa, pastel)
+draw_list->AddText(pos, pastelPink, text);
 
 // Giữ layout ImGui không bị lệch
 ImGui::Dummy(ImVec2(ImGui::CalcTextSize(text).x, ImGui::CalcTextSize(text).y));
@@ -398,10 +399,10 @@ ImVec4 buttonActiveColor = ImColor(85, 37, 180);       // Màu nền nút khi nh
 ImVec4 borderColor = ImColor(185, 162, 230);             // Màu viền đỏ
 
 // Nút "Xóa Mod Skin"
-ImGui::PushStyleColor(ImGuiCol_Button, ImColor(135, 206, 250));       // màu chính SkyBlue
-ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor(160, 220, 255)); // hover sáng hơn
-ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImColor(100, 180, 230));  // nhấn đậm hơn
-ImGui::PushStyleColor(ImGuiCol_Border, ImColor(180, 220, 250));        // viền xanh nhạt
+ImGui::PushStyleColor(ImGuiCol_Button,        ImColor(135, 206, 250).Value); // SkyBlue
+ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor(160, 220, 255).Value); // hover sáng
+ImGui::PushStyleColor(ImGuiCol_ButtonActive,  ImColor(100, 180, 230).Value); // active
+ImGui::PushStyleColor(ImGuiCol_Border,        ImColor(180, 220, 250).Value); // viền
 ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 20.0f);
 ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 2.0f);
 
@@ -423,14 +424,16 @@ if (ImGui::Button(xoaModSkin_cstr, ImVec2(140, 38))) {
 
 ImGui::PopStyleVar(2);
 ImGui::PopStyleColor(4);
-ImVec4 purpleText = ImVec4(85.0f / 255.0f, 37.0f / 255.0f, 180.0f / 255.0f, 1.0f);  // #5525B4
-ImVec4 purpleBackground = ImVec4(185.0f / 255.0f, 162.0f / 255.0f, 230.0f / 255.0f, 1.0f);  // #B9A2E6
+ImVec4 whiteText = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);  // #FFFFFF
+
+// Màu nền hồng nhạt
+ImVec4 lightPinkBackground = ImVec4(1.0f, 0.85f, 0.90f, 1.0f);  // Hồng nhạt
 
 // Đặt màu nền và màu chữ
-ImGui::PushStyleColor(ImGuiCol_Button, purpleBackground);        // Nền nút
-ImGui::PushStyleColor(ImGuiCol_Text, purpleText);                // Màu chữ
-ImGui::PushStyleColor(ImGuiCol_ButtonHovered, purpleBackground); // Nền khi hover
-ImGui::PushStyleColor(ImGuiCol_ButtonActive, purpleBackground);  // Nền khi click
+ImGui::PushStyleColor(ImGuiCol_Button, lightPinkBackground);        // Nền nút
+ImGui::PushStyleColor(ImGuiCol_Text, whiteText);                     // Màu chữ trắng
+ImGui::PushStyleColor(ImGuiCol_ButtonHovered, lightPinkBackground); // Nền khi hover
+ImGui::PushStyleColor(ImGuiCol_ButtonActive, lightPinkBackground); // Nền khi click
 
 ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 20.0f);
 ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
@@ -438,18 +441,18 @@ ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
 ImGui::SetCursorPosY(originalPosY + 156.0f);
 ImGui::SetCursorPosX(ImGui::GetCursorPosX() + spacing); // Update cursor position
 
-//Nút "Đăng xuất acc nhanh"
-ImVec4 logoutButtonColor    = ImColor(224, 17, 95);   // ruby thường (#E0115F)
-ImVec4 logoutHoveredColor   = ImColor(235, 60, 120);  // ruby sáng khi hover
-ImVec4 logoutActiveColor    = ImColor(200, 10, 80);   // ruby đậm khi nhấn
+// 🌸 Nút "Đăng xuất acc nhanh" - Ruby nhạt pastel
+ImVec4 logoutButtonColor    = ImColor(245, 140, 170);  // ruby nhạt (#F58CAA)
+ImVec4 logoutHoveredColor   = ImColor(250, 160, 185);  // ruby sáng hover (#FAA0B9)
+ImVec4 logoutActiveColor    = ImColor(235, 110, 150);  // ruby hơi đậm khi nhấn (#EB6E96)
 
-ImVec4 logoutBorderColor    = ImColor(255, 180, 200); // viền ruby nhạt
-ImVec4 logoutBorderHovered  = ImColor(240, 100, 140); // viền ruby khi hover
-ImVec4 logoutBorderActive   = ImColor(190, 0, 70);    // viền ruby khi nhấn
+ImVec4 logoutBorderColor    = ImColor(255, 190, 210);  // viền ruby pastel
+ImVec4 logoutBorderHovered  = ImColor(255, 160, 190);  // viền ruby hover
+ImVec4 logoutBorderActive   = ImColor(230, 90, 130);   // viền ruby active
 
 ImVec4 textNormal  = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);   // chữ trắng
-ImVec4 textHovered = ImVec4(1.0f, 0.6f, 0.8f, 1.0f);   // chữ hồng khi hover
-ImVec4 textActive  = ImVec4(0.8f, 0.0f, 0.4f, 1.0f);   // chữ tím ruby khi nhấn
+ImVec4 textHovered = ImVec4(1.0f, 0.75f, 0.85f, 1.0f); // chữ ruby nhạt khi hover
+ImVec4 textActive  = ImVec4(0.95f, 0.4f, 0.6f, 1.0f);  // chữ ruby pastel khi nhấn
 
 // Push màu nền + viền + chữ
 ImGui::PushStyleColor(ImGuiCol_Button, logoutButtonColor);
@@ -459,13 +462,13 @@ ImGui::PushStyleColor(ImGuiCol_Border, logoutBorderColor);
 ImGui::PushStyleColor(ImGuiCol_Text, textNormal);
 
 ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 2.0f); // viền dày 2px
-ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 12.0f);  // bo góc 12px
+ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 12.0f);  // bo góc mềm mại 12px
 
-//Nút
+NSString *dangXuatAccNhanh_nsstr = __dangXuatAccNhanh; 
+const char* dangXuatAccNhanh_cstr = [dangXuatAccNhanh_nsstr UTF8String];
 if (ImGui::Button(dangXuatAccNhanh_cstr, ImVec2(290, 42))) {
     [self Guest];
 }
-
 // Sau khi vẽ nút, đổi màu chữ + viền theo trạng thái
 if (ImGui::IsItemHovered()) {
     ImGui::GetStyle().Colors[ImGuiCol_Text]   = textHovered;
@@ -487,41 +490,51 @@ ImGui::PopStyleColor(5);
 ImGui::TextColored(ImColor(85, 37, 180), "_____________________________________________________________________");
 ImGui::SetCursorPosX(ImGui::GetCursorPosX() + spacing); // Cập nhật vị trí con trỏ
    ImGui::SetWindowFontScale(0.9f);
-      const char* banquyen1CString = [__banquyen1 UTF8String];
+      // Lấy text bản quyền
+const char* banquyen1CString = [__banquyen1 UTF8String];
 
-// Tính chiều rộng & chiều cao text
+// Tính chiều rộng & chiều cao chữ
 float textWidth  = ImGui::CalcTextSize(banquyen1CString).x;
 float textHeight = ImGui::GetTextLineHeight();
 
-// Đẩy text sang phải
-ImGui::SetCursorPosX(ImGui::GetWindowWidth() - textWidth - 10);
+// Căn giữa
+ImGui::SetCursorPosX((ImGui::GetWindowWidth() - textWidth) * 0.5f);
 
-// Lấy vị trí bắt đầu
+// Lấy vị trí chữ
 ImVec2 textPos = ImGui::GetCursorScreenPos();
 
-// Render text dạng selectable (click mở link)
-ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(224/255.0f, 17/255.0f, 95/255.0f, 1.0f)); // Ruby
-if (ImGui::Selectable(banquyen1CString, false, 0, ImVec2(textWidth, textHeight))) {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://beacons.ai/yenv2"]];
-}
+// Màu hồng nhạt pastel
+ImVec4 pastelPinkVec = ImVec4(1.0f, 0.85f, 0.90f, 1.0f);
+
+// Render chữ
+ImGui::PushStyleColor(ImGuiCol_Text, pastelPinkVec);
+ImGui::Text("%s", banquyen1CString);
 ImGui::PopStyleColor();
 
-// Nếu hover → vẽ gạch chân ruby
-if (ImGui::IsItemHovered()) {
-    ImGui::GetWindowDrawList()->AddLine(
-        ImVec2(textPos.x, textPos.y + textHeight - 2),
-        ImVec2(textPos.x + textWidth, textPos.y + textHeight - 2),
-        IM_COL32(224, 17, 95, 255), 1.5f
-    );
-} 
+// Click → mở link
+if (ImGui::IsItemClicked()) {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://beacons.ai/yenv2"]];
+}
 
+// Hover → glow nhẹ
+if (ImGui::IsItemHovered()) {
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    for (int i = -2; i <= 2; i++) {
+        for (int j = -2; j <= 2; j++) {
+            if (i == 0 && j == 0) continue;
+            draw_list->AddText(ImVec2(textPos.x + i, textPos.y + j),
+                               IM_COL32(255, 192, 203, 80), // hồng nhạt mờ glow
+                               banquyen1CString);
+        }
+    }
+}
             ImGui::End();
         }
 ImGuiStyle& style = ImGui::GetStyle();
 
 // Thiết lập giao diện người dùng trong suốt
-style.Colors[ImGuiCol_WindowBg] = ImColor(10, 10, 10, 255);  // Màu đen nhạt với độ trong suốt không đổi
-style.Colors[ImGuiCol_WindowBg].w = 5.f;  // Đặt mức độ đục của nền cửa sổ thành 0 (suốt)
+style.Colors[ImGuiCol_WindowBg] = ImColor(10, 10, 10, 200); // đen hơi trong
+style.Colors[ImGuiCol_WindowBg].w = 0.5f;  // 50% trong suốt
 
 // Thiết lập bo tròn
 style.FrameRounding = 1.0f;
